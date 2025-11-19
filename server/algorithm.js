@@ -1,4 +1,5 @@
 // CPAP Mask Selection Algorithm - Complete 12-Factor Implementation
+const { getMasksByCriteria, generateSelectionExplanation } = require('./maskCatalog');
 
 // STEP 1: SAFETY CHECK (Critical Constraints)
 function checkSafetyConstraints(responses) {
@@ -567,31 +568,222 @@ function calculateMaskRecommendation(responses) {
     index === self.findIndex(a => a.item === acc.item)
   );
   
-  // Calculate factor influence summary
-  const factorCount = {
-    maskType: 0,
-    attachment: 0,
-    accessories: 0
+  // Calculate detailed factor influence summary
+  const factorDetails = {
+    maskType: [],
+    attachment: [],
+    accessories: []
   };
   
-  if (responses.breathing || responses.nasal) factorCount.maskType++;
-  if (responses.claustrophobic || responses.facialHair || responses.sleepPosition) factorCount.maskType++;
-  if (responses.sleepMovement || responses.skinSensitivity) factorCount.maskType++;
-  if (responses.adjustment || responses.assistant || responses.implant) factorCount.attachment++;
-  if (responses.sleepMovement || responses.sleepPosition) factorCount.attachment++;
-  if (responses.skinSensitivity || responses.facialHair || responses.breathing) factorCount.accessories++;
+  // Mask type factors
+  if (responses.breathing) {
+    factorDetails.maskType.push({
+      factor: 'Breathing Type',
+      value: responses.breathing === 'nose_only' ? 'Nose only' : 
+             responses.breathing === 'mouth_only' ? 'Mouth only' : 'Mixed',
+      reason: responses.breathing === 'nose_only' ? 'Nose-only breathing is ideal for nasal masks' :
+              responses.breathing === 'mouth_only' ? 'Mouth breathing requires full face mask' :
+              'Mixed breathing may need full face or nasal with chin strap'
+    });
+  }
+  if (responses.nasal) {
+    const nasalLabels = {
+      'no_obstruction': 'No obstruction',
+      'mild_obstruction': 'Mild obstruction',
+      'severe_obstruction': 'Severe obstruction',
+      'deviated_septum': 'Deviated septum',
+      'seasonal_allergies': 'Seasonal allergies'
+    };
+    factorDetails.maskType.push({
+      factor: 'Nasal Status',
+      value: nasalLabels[responses.nasal] || responses.nasal,
+      reason: responses.nasal === 'severe_obstruction' ? 'Severe obstruction requires full face mask' :
+              responses.nasal === 'deviated_septum' ? 'Deviated septum prefers full face mask' :
+              responses.nasal === 'seasonal_allergies' ? 'Allergies may require heated humidifier' :
+              'Nasal status affects mask type selection'
+    });
+  }
+  if (responses.claustrophobic) {
+    factorDetails.maskType.push({
+      factor: 'Claustrophobic',
+      value: 'Yes',
+      reason: 'Claustrophobic patients prefer minimal contact masks (nasal pillows)'
+    });
+  }
+  if (responses.facialHair) {
+    factorDetails.maskType.push({
+      factor: 'Facial Hair',
+      value: 'Yes',
+      reason: 'Facial hair requires nasal pillows or total face mask for proper seal'
+    });
+  }
+  if (responses.sleepPosition) {
+    const positionLabels = {
+      'back': 'Back',
+      'side': 'Side',
+      'stomach': 'Stomach',
+      'sitting': 'Sitting upright'
+    };
+    factorDetails.maskType.push({
+      factor: 'Sleep Position',
+      value: positionLabels[responses.sleepPosition] || responses.sleepPosition,
+      reason: responses.sleepPosition === 'side' || responses.sleepPosition === 'stomach' ? 
+              'Side/stomach sleepers benefit from tube-up designs' : 'Sleep position affects mask design'
+    });
+  }
+  if (responses.sleepMovement === 'all_the_time') {
+    factorDetails.maskType.push({
+      factor: 'Sleep Movement',
+      value: 'Moves all the time',
+      reason: 'High movement requires nasal pillows for better seal retention'
+    });
+  }
+  if (responses.skinSensitivity) {
+    factorDetails.maskType.push({
+      factor: 'Skin Sensitivity',
+      value: 'Yes',
+      reason: 'Sensitive skin requires gel/fabric/memory foam materials'
+    });
+  }
+  
+  // Attachment factors
+  if (responses.assistant) {
+    factorDetails.attachment.push({
+      factor: 'Requires Assistant',
+      value: 'Yes',
+      reason: 'Easy removal mechanism required (magnetic quick-release)'
+    });
+  }
+  if (responses.adjustment) {
+    factorDetails.attachment.push({
+      factor: 'Adjustment Issues',
+      value: 'Yes',
+      reason: 'Auto-adjusting headgear recommended for dexterity issues'
+    });
+  }
+  if (responses.implant) {
+    factorDetails.attachment.push({
+      factor: 'Medical Implants',
+      value: 'Yes',
+      reason: 'Magnetic headgear contraindicated - non-magnetic required'
+    });
+  }
+  if (responses.sleepMovement === 'all_the_time') {
+    factorDetails.attachment.push({
+      factor: 'Sleep Movement',
+      value: 'Moves all the time',
+      reason: 'Enhanced 4-point headgear required for seal stability'
+    });
+  }
+  if (responses.sleepPosition === 'side' || responses.sleepPosition === 'stomach') {
+    factorDetails.attachment.push({
+      factor: 'Sleep Position',
+      value: responses.sleepPosition === 'side' ? 'Side' : 'Stomach',
+      reason: 'Over-the-head headgear recommended for side/stomach sleepers'
+    });
+  }
+  
+  // Accessory factors
+  if (responses.skinSensitivity) {
+    factorDetails.accessories.push({
+      factor: 'Skin Sensitivity',
+      value: 'Yes',
+      reason: 'Gel cushions, hypoallergenic silicone, and fabric covers needed'
+    });
+  }
+  if (responses.facialHair) {
+    factorDetails.accessories.push({
+      factor: 'Facial Hair',
+      value: 'Yes',
+      reason: 'Fabric cushion covers improve seal with facial hair'
+    });
+  }
+  if (responses.breathing === 'mouth_only') {
+    factorDetails.accessories.push({
+      factor: 'Mouth Breathing',
+      value: 'Yes',
+      reason: 'Heated humidifier essential to prevent severe dryness'
+    });
+  }
+  if (responses.nasal === 'seasonal_allergies') {
+    factorDetails.accessories.push({
+      factor: 'Seasonal Allergies',
+      value: 'Yes',
+      reason: 'Heated humidifier reduces nasal congestion'
+    });
+  }
+  if (responses.breathing === 'mixed') {
+    factorDetails.accessories.push({
+      factor: 'Mixed Breathing',
+      value: 'Yes',
+      reason: 'Chin strap or mouth tape may be needed with nasal mask'
+    });
+  }
+  
+  // Use mask catalog to get detailed recommendations
+  // Determine criteria for mask selection
+  const needsTubeUp = responses.sleepPosition === 'side' || responses.sleepPosition === 'stomach';
+  const needsSkinFriendly = responses.skinSensitivity;
+  const needsFacialHairCompatible = responses.facialHair;
+  
+  // Get recommended masks from catalog
+  const recommendedMasks = getMasksByCriteria({
+    maskType: refinedRecommendation.category,
+    tubeUp: needsTubeUp ? true : null,
+    skinFriendly: needsSkinFriendly,
+    facialHairCompatible: needsFacialHairCompatible,
+    sleepPosition: responses.sleepPosition,
+    claustrophobic: responses.claustrophobic,
+    skinSensitivity: responses.skinSensitivity,
+    facialHair: responses.facialHair
+  });
+  
+  // Get top 3-4 masks (top scoring)
+  const topMasks = recommendedMasks.slice(0, 4);
+  
+  // Organize by brand
+  const maskExamples = {
+    resmed: [],
+    philips: []
+  };
+  
+  topMasks.forEach(mask => {
+    const maskInfo = {
+      name: mask.name,
+      description: mask.description,
+      selectionReason: generateSelectionExplanation(mask, responses, factorDetails),
+      features: mask.features,
+      bestFor: mask.bestFor,
+      score: mask.score
+    };
+    
+    if (mask.brand === 'ResMed') {
+      maskExamples.resmed.push(maskInfo);
+    } else if (mask.brand === 'Philips') {
+      maskExamples.philips.push(maskInfo);
+    }
+  });
   
   return {
-    maskType: refinedRecommendation.category,
+    maskType: refinedRecommendation.category || 'NASAL_MASK',
+    maskTypeLabel: refinedRecommendation.category === 'NASAL_MASK' ? 'Nasal Mask' :
+                   refinedRecommendation.category === 'NASAL_PILLOWS' ? 'Nasal Pillows' :
+                   refinedRecommendation.category === 'FULL_FACE' ? 'Full Face Mask' : 'Nasal Mask',
     specificModels: refinedRecommendation.specificModels || [],
     alternativeModels: refinedRecommendation.alternativeModels || [],
+    maskExamples: maskExamples,
     attachment: attachment.primary,
     attachmentAlternatives: attachment.alternatives,
     accessories: uniqueAccessories,
     successRate: refinedRecommendation.successRate || '75-85%',
     safetyFlags: constraints.safetyFlags,
     modificationNotes: [...modificationNotes, ...refinementNotes],
-    factorInfluence: factorCount,
+    factorInfluence: {
+      maskType: factorDetails.maskType.length,
+      attachment: factorDetails.attachment.length,
+      accessories: factorDetails.accessories.length,
+      details: factorDetails
+    },
     constraints
   };
 }

@@ -36,12 +36,87 @@ function Results({ recommendation, responses, onReset }) {
       <div className="recommendation-section">
         <h3>Recommended Mask Type</h3>
         <div className="mask-type-card">
-          <h4>{getMaskTypeLabel(recommendation.maskType)}</h4>
+          <h4>{recommendation.maskTypeLabel || getMaskTypeLabel(recommendation.maskType)}</h4>
           <div className="success-rate">
             Expected Success Rate: <strong>{recommendation.successRate}</strong>
           </div>
         </div>
       </div>
+
+      {/* Specific ResMed and Philips Examples */}
+      {recommendation.maskExamples && (
+        <div className="recommendation-section">
+          <h3>Recommended Mask Models</h3>
+          
+          {recommendation.maskExamples.resmed && recommendation.maskExamples.resmed.length > 0 && (
+            <div className="brand-section">
+              <h4 className="brand-header">ResMed Masks</h4>
+              <div className="mask-examples-list">
+                {recommendation.maskExamples.resmed.map((mask, index) => (
+                  <div key={index} className="mask-example-card">
+                    <div className="mask-card-header">
+                      <h5>{mask.name}</h5>
+                      {index === 0 && <span className="top-choice">Top Choice</span>}
+                    </div>
+                    <p className="mask-description">{mask.description}</p>
+                    {mask.selectionReason && (
+                      <div className="selection-reason">
+                        <strong>Why this mask:</strong>
+                        <p>{mask.selectionReason}</p>
+                      </div>
+                    )}
+                    {mask.features && mask.features.length > 0 && (
+                      <div className="mask-features">
+                        <strong>Key Features:</strong>
+                        <ul>
+                          {mask.features.slice(0, 3).map((feature, fIndex) => (
+                            <li key={fIndex}>{feature}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {recommendation.maskExamples.philips && recommendation.maskExamples.philips.length > 0 && (
+            <div className="brand-section">
+              <h4 className="brand-header">Philips Masks</h4>
+              <div className="mask-examples-list">
+                {recommendation.maskExamples.philips.map((mask, index) => (
+                  <div key={index} className="mask-example-card">
+                    <div className="mask-card-header">
+                      <h5>{mask.name}</h5>
+                      {index === 0 && recommendation.maskExamples.resmed.length === 0 && (
+                        <span className="top-choice">Top Choice</span>
+                      )}
+                    </div>
+                    <p className="mask-description">{mask.description}</p>
+                    {mask.selectionReason && (
+                      <div className="selection-reason">
+                        <strong>Why this mask:</strong>
+                        <p>{mask.selectionReason}</p>
+                      </div>
+                    )}
+                    {mask.features && mask.features.length > 0 && (
+                      <div className="mask-features">
+                        <strong>Key Features:</strong>
+                        <ul>
+                          {mask.features.slice(0, 3).map((feature, fIndex) => (
+                            <li key={fIndex}>{feature}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Specific Models */}
       {recommendation.specificModels && recommendation.specificModels.length > 0 && (
@@ -147,21 +222,61 @@ function Results({ recommendation, responses, onReset }) {
         </div>
       )}
 
-      {/* Factor Count Summary */}
-      {recommendation.factorInfluence && (
+      {/* Detailed Factor Influence Summary */}
+      {recommendation.factorInfluence && recommendation.factorInfluence.details && (
         <div className="recommendation-section">
           <h3>Factor Influence Summary</h3>
-          <div className="factor-count">
-            <p>
-              <strong>{recommendation.factorInfluence.maskType}</strong> factors influenced mask type selection
-            </p>
-            <p>
-              <strong>{recommendation.factorInfluence.attachment}</strong> factors influenced attachment selection
-            </p>
-            <p>
-              <strong>{recommendation.factorInfluence.accessories}</strong> factors influenced accessory requirements
-            </p>
-          </div>
+          
+          {recommendation.factorInfluence.details.maskType && recommendation.factorInfluence.details.maskType.length > 0 && (
+            <div className="factor-category">
+              <h4>Mask Type Factors ({recommendation.factorInfluence.maskType})</h4>
+              <div className="factor-details-list">
+                {recommendation.factorInfluence.details.maskType.map((factor, index) => (
+                  <div key={index} className="factor-detail-item">
+                    <div className="factor-detail-header">
+                      <strong>{factor.factor}</strong>
+                      <span className="factor-value">{factor.value}</span>
+                    </div>
+                    <p className="factor-reason">{factor.reason}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {recommendation.factorInfluence.details.attachment && recommendation.factorInfluence.details.attachment.length > 0 && (
+            <div className="factor-category">
+              <h4>Attachment Factors ({recommendation.factorInfluence.attachment})</h4>
+              <div className="factor-details-list">
+                {recommendation.factorInfluence.details.attachment.map((factor, index) => (
+                  <div key={index} className="factor-detail-item">
+                    <div className="factor-detail-header">
+                      <strong>{factor.factor}</strong>
+                      <span className="factor-value">{factor.value}</span>
+                    </div>
+                    <p className="factor-reason">{factor.reason}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {recommendation.factorInfluence.details.accessories && recommendation.factorInfluence.details.accessories.length > 0 && (
+            <div className="factor-category">
+              <h4>Accessory Factors ({recommendation.factorInfluence.accessories})</h4>
+              <div className="factor-details-list">
+                {recommendation.factorInfluence.details.accessories.map((factor, index) => (
+                  <div key={index} className="factor-detail-item">
+                    <div className="factor-detail-header">
+                      <strong>{factor.factor}</strong>
+                      <span className="factor-value">{factor.value}</span>
+                    </div>
+                    <p className="factor-reason">{factor.reason}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
