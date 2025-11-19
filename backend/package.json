@@ -1,0 +1,21 @@
+{
+  "name": "cpap-mask-selector-api",
+  "version": "1.0.0",
+  "description": "Backend API for CPAP Mask Selector",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "keywords": ["cpap", "mask", "selector"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
+
