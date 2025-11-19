@@ -32,16 +32,20 @@ function MaskCard({ mask, isTopChoice }) {
     <div className="mask-card">
       <div className="mask-card-header">
         <div className="mask-title-section">
-          {mask.imagePath && (
+          {mask.imagePath ? (
             <img 
               src={encodeURI(mask.imagePath)} 
-              alt={mask.name}
+              alt={mask.name || mask.model || 'CPAP Mask'}
               className="mask-image"
               onError={(e) => {
                 console.error('Image failed to load:', mask.imagePath);
                 e.target.style.display = 'none';
               }}
             />
+          ) : (
+            <div className="mask-image-placeholder">
+              <span>No Image</span>
+            </div>
           )}
           <div className="mask-title-info">
             <h5>{mask.name}</h5>
@@ -50,9 +54,9 @@ function MaskCard({ mask, isTopChoice }) {
         </div>
       </div>
 
-      {mask.description && (
-        <p className="mask-description">{mask.description}</p>
-      )}
+      <p className="mask-description">
+        {mask.description || mask.design ? `${mask.design || ''} ${mask.type || 'mask'}`.trim() : `${mask.name || mask.model || 'CPAP Mask'}`}
+      </p>
 
       {mask.keyFeatures && mask.keyFeatures.length > 0 && (
         <div className="mask-features">

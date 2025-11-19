@@ -101,6 +101,7 @@ function getImageName(brand, model) {
     'ResMed AirFit F30i': 'AirFit F30i.jpg',
     'ResMed AirFit F40': 'AirFit F40.jpg',
     'ResMed Mirage Quattro': 'Mirage Quattro.jpg',
+    'ResMed Quattro Air': 'Quattro Air.PNG',
     'Philips DreamWear Silicone Pillows': 'DreamWear Silicone Pillows.PNG',
     'Philips Pico': 'Pico.PNG',
     'Philips DreamWear Nasal': 'DreamWear.PNG',

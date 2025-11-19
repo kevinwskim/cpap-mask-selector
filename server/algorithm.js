@@ -751,7 +751,7 @@ function calculateMaskRecommendation(responses) {
     const maskInfo = {
       name: mask.name,
       model: mask.model,
-      description: mask.description || `${mask.design} ${mask.type.toLowerCase()}`,
+      description: mask.description || mask.design ? `${mask.design} ${mask.type.toLowerCase()}` : `${mask.type} mask`,
       selectionReason: generateSelectionExplanation(mask, responses, factorDetails),
       selectionExplanation: mask.selectionExplanation,
       keyFeatures: mask.keyFeatures || [],
