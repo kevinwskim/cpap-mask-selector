@@ -336,6 +336,217 @@ addText('Adjustment Issues (Weight: 50)', 12, true);
 addText('Impact: Attachment simplification', 11);
 addText('Decision Rule: Auto-adjusting or simplified designs preferred', 11);
 
+// New Page - Questions, Choices, and Decisions
+doc.addPage();
+
+addSection('Questions, Choices, and Decision Mapping', 18, true);
+doc.moveDown(0.3);
+addText('This section details the exact questions asked, available answer choices, and how each choice influences the algorithm\'s decisions.', 11);
+doc.moveDown(0.5);
+
+// TIER 1 FACTORS
+addSection('Tier 1: Critical Safety Factors', 16, true);
+
+// Assistant
+addText('1. Assistant (Weight: 100)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you require assistance to remove the mask in an emergency?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → requiresEasyRemoval = true; Requires magnetic quick-release or easy-removal mechanism', 9);
+addBullet('No → No special removal requirement', 9);
+doc.moveDown(0.3);
+
+// Eye/Reflux
+addText('2. Eye/Reflux (Weight: 100)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have eye issues or severe acid reflux that could cause aspiration?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → canUseFullFace = false; CRITICAL: Must use nasal-only masks (aspiration risk)', 9);
+addBullet('No → Full face masks allowed if otherwise appropriate', 9);
+doc.moveDown(0.3);
+
+// Drug
+addText('3. Drug/Vomiting (Weight: 100)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you take medications that cause vomiting or nausea?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → canUseFullFace = false; CRITICAL: Must use nasal-only masks (aspiration risk)', 9);
+addBullet('No → Full face masks allowed if otherwise appropriate', 9);
+doc.moveDown(0.3);
+
+// Implant
+addText('4. Implant (Weight: 70)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have any medical implants (pacemaker, defibrillator, etc.)?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → canUseMagnetic = false; Must use non-magnetic attachments only', 9);
+addBullet('No → Magnetic attachments allowed if otherwise appropriate', 9);
+
+// New Page
+doc.addPage();
+
+// TIER 2 FACTORS
+addSection('Tier 2: Primary Mask Type Determinants', 16, true);
+
+// Breathing Type
+addText('5. Breathing Type (Weight: 95)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "How do you primarily breathe during sleep?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Nose only', 10);
+addBullet('Mouth only', 10);
+addBullet('Mixed (both nose and mouth)', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Nose only → Primary: Nasal Mask/Pillows (85-90% success if no obstruction)', 9);
+addBullet('Mouth only → Primary: Full Face Mask (80-85% success, if safe)', 9);
+addBullet('Mixed → Full Face OR Nasal + Chin Strap (75-85% success)', 9);
+doc.moveDown(0.3);
+
+// Nasal Obstruction
+addText('6. Nasal Obstruction (Weight: 90)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have any nasal obstruction or issues?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('No obstruction', 10);
+addBullet('Mild obstruction', 10);
+addBullet('Severe obstruction', 10);
+addBullet('Deviated septum', 10);
+addBullet('Seasonal allergies', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('No obstruction → Ideal for nasal masks; no modification needed', 9);
+addBullet('Mild obstruction → Consider dual approach or full face', 9);
+addBullet('Severe obstruction → REQUIRES Full Face Mask (if safe)', 9);
+addBullet('Deviated septum → Full Face preferred (if safe)', 9);
+addBullet('Seasonal allergies → Consider heated humidifier accessory', 9);
+
+// New Page
+doc.addPage();
+
+// TIER 3 FACTORS
+addSection('Tier 3: Strong Modifier Factors', 16, true);
+
+// Claustrophobic
+addText('7. Claustrophobic (Weight: 80)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you experience claustrophobia or discomfort with things covering your face?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes + Nasal Mask → SWITCH to Nasal Pillows (minimal contact)', 9);
+addBullet('Yes + Full Face → Select minimal-contact models (F40, F30, Amara View)', 9);
+addBullet('No → No modification based on this factor', 9);
+doc.moveDown(0.3);
+
+// Facial Hair
+addText('8. Facial Hair (Weight: 75)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have facial hair (beard, mustache)?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes + Nasal Mask → REQUIRED switch to Nasal Pillows (traditional cushions fail to seal)', 9);
+addBullet('Yes + Full Face → Select total face mask OR full face + fabric liners', 9);
+addBullet('No → No modification based on this factor', 9);
+doc.moveDown(0.3);
+
+// Sleep Position
+addText('9. Sleep Position (Weight: 70)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "What is your primary sleep position?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Back', 10);
+addBullet('Side', 10);
+addBullet('Stomach', 10);
+addBullet('Sitting upright', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Back → Any design acceptable; no tube-up requirement', 9);
+addBullet('Side → REQUIRES tube-up design (top-of-head tubing for pillow compatibility)', 9);
+addBullet('Stomach → REQUIRES tube-up design (top-of-head tubing for pillow compatibility)', 9);
+addBullet('Sitting → May indicate underlying condition; consider medical evaluation', 9);
+
+// New Page
+doc.addPage();
+
+// TIER 4 FACTORS
+addSection('Tier 4: Moderate Modifier Factors', 16, true);
+
+// Sleep Movement
+addText('10. Sleep Movement (Weight: 60)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "How much do you move during sleep?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Very little movement', 10);
+addBullet('Some movement', 10);
+addBullet('Move all the time', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Very little → Standard headgear sufficient', 9);
+addBullet('Some → Standard headgear usually sufficient', 9);
+addBullet('Move all the time → REQUIRES Enhanced 4-point headgear; prefer Nasal Pillows over Nasal Mask', 9);
+doc.moveDown(0.3);
+
+// Skin Sensitivity
+addText('11. Skin Sensitivity (Weight: 55)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have sensitive skin or allergies to silicone/materials?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → REQUIRES gel, fabric, or memory foam cushions; hypoallergenic materials', 9);
+addBullet('Yes → Prioritize: AirTouch (fabric), DreamWear Gel, or soft silicone options', 9);
+addBullet('No → Standard silicone cushions acceptable', 9);
+doc.moveDown(0.3);
+
+// Adjustment Issues
+addText('12. Adjustment Issues (Weight: 50)', 13, true);
+doc.moveDown(0.2);
+addText('Question: "Do you have difficulty adjusting straps or headgear (arthritis, dexterity issues)?"', 10, true);
+doc.moveDown(0.2);
+addText('Answer Choices:', 10, true);
+addBullet('Yes', 10);
+addBullet('No', 10);
+doc.moveDown(0.2);
+addText('Decision Mapping:', 10, true);
+addBullet('Yes → Prefer magnetic quick-release attachments (if no implant)', 9);
+addBullet('Yes → Prefer auto-adjusting or simplified designs', 9);
+addBullet('No → Standard attachments acceptable', 9);
+
 // New Page - Decision Tree Visual
 doc.addPage();
 
