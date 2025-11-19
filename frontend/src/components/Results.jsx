@@ -37,39 +37,145 @@ function Results({ recommendation, responses, onReset }) {
   };
 
   const exportToPDF = async () => {
-    if (!resultsRef.current) return;
+    if (!resultsRef.current) {
+      alert('Error: Results content not found');
+      return;
+    }
 
     try {
-      const canvas = await html2canvas(resultsRef.current, {
+      // Show loading state
+      const exportButton = document.querySelector('.btn-export');
+      const originalText = exportButton?.textContent;
+      if (exportButton) {
+        exportButton.textContent = '⏳ Generating PDF...';
+        exportButton.disabled = true;
+      }
+
+      // Ensure element is visible
+      const element = resultsRef.current;
+      if (!element || element.offsetWidth === 0 || element.offsetHeight === 0) {
+        throw new Error('Results content is not visible');
+      }
+
+      // Wait for all images to load
+      const images = element.querySelectorAll('img');
+      const imagePromises = Array.from(images).map((img) => {
+        if (img.complete && img.naturalHeight !== 0) {
+          return Promise.resolve();
+        }
+        return new Promise((resolve) => {
+          const timeout = setTimeout(resolve, 3000); // 3 second timeout
+          img.onload = () => {
+            clearTimeout(timeout);
+            resolve();
+          };
+          img.onerror = () => {
+            clearTimeout(timeout);
+            resolve(); // Continue even if image fails
+          };
+        });
+      });
+      await Promise.all(imagePromises);
+
+      // Scroll to top to ensure all content is visible
+      window.scrollTo(0, 0);
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Get actual dimensions
+      const width = element.scrollWidth || element.offsetWidth;
+      const height = element.scrollHeight || element.offsetHeight;
+
+      if (width === 0 || height === 0) {
+        throw new Error('Content has zero dimensions');
+      }
+
+      // Capture with html2canvas
+      const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
+        allowTaint: false,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: width,
+        height: height,
+        windowWidth: width,
+        windowHeight: height,
+        scrollX: 0,
+        scrollY: 0,
+        onclone: (clonedDoc) => {
+          // Ensure all styles are applied in the cloned document
+          const clonedElement = clonedDoc.querySelector('.results-container');
+          if (clonedElement) {
+            clonedElement.style.visibility = 'visible';
+            clonedElement.style.display = 'block';
+          }
+        }
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      // Check if canvas has content
+      if (!canvas || canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas capture failed - canvas is empty');
+      }
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      
+      // Check if image data is valid
+      if (!imgData || imgData === 'data:,') {
+        throw new Error('Failed to generate image data from canvas');
+      }
+
+      // Create PDF
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      const pdfWidth = 210; // A4 width in mm
+      const pdfHeight = 297; // A4 height in mm
+      const margin = 10; // 10mm margin
+      const contentWidth = pdfWidth - (margin * 2);
+      const contentHeight = pdfHeight - (margin * 2);
+      
+      // Calculate image dimensions to fit within margins
+      const imgWidth = contentWidth;
+      const imgHeight = (canvas.height * contentWidth) / canvas.width;
+      
+      let position = margin;
+      let remainingHeight = imgHeight;
 
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Add first page
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      remainingHeight -= contentHeight;
 
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
+      // Add additional pages if needed
+      while (remainingHeight > 0) {
+        position = margin - (imgHeight - remainingHeight);
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        remainingHeight -= contentHeight;
       }
 
       const fileName = `CPAP_Mask_Recommendation_${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(fileName);
+
+      // Restore button
+      if (exportButton) {
+        exportButton.textContent = originalText || '📄 Export PDF';
+        exportButton.disabled = false;
+      }
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        element: resultsRef.current,
+        elementWidth: resultsRef.current?.offsetWidth,
+        elementHeight: resultsRef.current?.offsetHeight
+      });
+      alert(`Failed to generate PDF: ${error.message}\n\nPlease check the browser console for more details.`);
+      
+      // Restore button
+      const exportButton = document.querySelector('.btn-export');
+      if (exportButton) {
+        exportButton.textContent = '📄 Export PDF';
+        exportButton.disabled = false;
+      }
     }
   };
 
