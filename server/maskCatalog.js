@@ -4,27 +4,56 @@
 const fs = require('fs');
 const path = require('path');
 
-// Parse CSV data
+// Parse CSV data with proper handling of quoted fields
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
 const csvPath = path.join(__dirname, '../detail/FINAL_CPAP_MASK_CATALOG_COMPLETE.csv');
 const csvData = fs.readFileSync(csvPath, 'utf-8');
 const lines = csvData.split('\n').filter(line => line.trim());
-const headers = lines[0].split(',');
+const headers = parseCSVLine(lines[0]);
 
 // Build mask catalog from CSV
 const MASK_CATALOG = {};
 const imageBasePath = '/detail/image/';
 
 for (let i = 1; i < lines.length; i++) {
-  const values = lines[i].split(',');
+  const values = parseCSVLine(lines[i]);
   const mask = {};
   
   headers.forEach((header, index) => {
-    mask[header.trim()] = values[index]?.trim() || '';
+    let value = values[index]?.trim() || '';
+    // Remove quotes if present
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1);
+    }
+    mask[header.trim()] = value;
   });
   
   // Create catalog entry
   const key = `${mask.Brand} ${mask.Model}`;
   const imageName = getImageName(mask.Brand, mask.Model);
+  
+  // Build description from design and type
+  const description = `${mask.Design} ${mask.Type.toLowerCase()}${mask['Cushion Material'] ? ` with ${mask['Cushion Material']}` : ''}`;
   
   MASK_CATALOG[key] = {
     brand: mask.Brand,
@@ -43,6 +72,7 @@ for (let i = 1; i < lines.length; i++) {
     algorithmMatch: mask['Algorithm Match'] || '',
     address: mask.Address || '',
     imagePath: imageName ? `${imageBasePath}${imageName}` : null,
+    description: description,
     tubeUp: mask.Connection === 'Top',
     skinFriendly: mask['Cushion Material']?.toLowerCase().includes('fabric') || 
                   mask['Cushion Material']?.toLowerCase().includes('memory foam') ||
@@ -110,9 +140,25 @@ function getMasksByCriteria(criteria) {
 
   let masks = Object.values(MASK_CATALOG);
 
+  // Map algorithm mask types to catalog types
+  const typeMap = {
+    'NASAL_MASK': 'Nasal Mask',
+    'NASAL_PILLOWS': 'Nasal Pillows',
+    'FULL_FACE': 'Full Face'
+  };
+  
+  const catalogType = typeMap[maskType] || maskType;
+
   // Filter by mask type
   if (maskType) {
-    masks = masks.filter(m => m.type === maskType);
+    masks = masks.filter(m => {
+      // Try exact match first
+      if (m.type === catalogType) return true;
+      // Try algorithm type format
+      if (m.type === maskType) return true;
+      // Try case-insensitive match
+      return m.type.toLowerCase() === catalogType.toLowerCase();
+    });
   }
 
   // Filter by tube-up requirement

@@ -34,10 +34,11 @@ function MaskCard({ mask, isTopChoice }) {
         <div className="mask-title-section">
           {mask.imagePath && (
             <img 
-              src={mask.imagePath} 
+              src={encodeURI(mask.imagePath)} 
               alt={mask.name}
               className="mask-image"
               onError={(e) => {
+                console.error('Image failed to load:', mask.imagePath);
                 e.target.style.display = 'none';
               }}
             />
@@ -49,7 +50,9 @@ function MaskCard({ mask, isTopChoice }) {
         </div>
       </div>
 
-      <p className="mask-description">{mask.description || mask.model}</p>
+      {mask.description && (
+        <p className="mask-description">{mask.description}</p>
+      )}
 
       {mask.keyFeatures && mask.keyFeatures.length > 0 && (
         <div className="mask-features">
@@ -65,8 +68,9 @@ function MaskCard({ mask, isTopChoice }) {
       <button
         className="expand-button"
         onClick={() => setIsExpanded(!isExpanded)}
+        type="button"
       >
-        {isExpanded ? '▼ Hide Details' : '▶ Why This Mask?'}
+        {isExpanded ? '▼ Hide Details' : '▶ Why This Mask? (Click for Details)'}
       </button>
 
       {isExpanded && (
