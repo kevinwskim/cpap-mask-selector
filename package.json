@@ -10,15 +10,19 @@
     "dev": "npm run build && nodemon server/index.js",
     "setup": "npm run install-all && npm run build"
   },
-  "keywords": ["cpap", "mask", "selector"],
+  "keywords": [
+    "cpap",
+    "mask",
+    "selector"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }
-

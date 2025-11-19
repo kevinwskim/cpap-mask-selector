@@ -1,4 +1,5 @@
 import React from 'react';
+import MaskCard from './MaskCard';
 import './Results.css';
 
 function Results({ recommendation, responses, onReset }) {
@@ -53,29 +54,11 @@ function Results({ recommendation, responses, onReset }) {
               <h4 className="brand-header">ResMed Masks</h4>
               <div className="mask-examples-list">
                 {recommendation.maskExamples.resmed.map((mask, index) => (
-                  <div key={index} className="mask-example-card">
-                    <div className="mask-card-header">
-                      <h5>{mask.name}</h5>
-                      {index === 0 && <span className="top-choice">Top Choice</span>}
-                    </div>
-                    <p className="mask-description">{mask.description}</p>
-                    {mask.selectionReason && (
-                      <div className="selection-reason">
-                        <strong>Why this mask:</strong>
-                        <p>{mask.selectionReason}</p>
-                      </div>
-                    )}
-                    {mask.features && mask.features.length > 0 && (
-                      <div className="mask-features">
-                        <strong>Key Features:</strong>
-                        <ul>
-                          {mask.features.slice(0, 3).map((feature, fIndex) => (
-                            <li key={fIndex}>{feature}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                  <MaskCard 
+                    key={index} 
+                    mask={mask} 
+                    isTopChoice={index === 0}
+                  />
                 ))}
               </div>
             </div>
@@ -86,31 +69,11 @@ function Results({ recommendation, responses, onReset }) {
               <h4 className="brand-header">Philips Masks</h4>
               <div className="mask-examples-list">
                 {recommendation.maskExamples.philips.map((mask, index) => (
-                  <div key={index} className="mask-example-card">
-                    <div className="mask-card-header">
-                      <h5>{mask.name}</h5>
-                      {index === 0 && recommendation.maskExamples.resmed.length === 0 && (
-                        <span className="top-choice">Top Choice</span>
-                      )}
-                    </div>
-                    <p className="mask-description">{mask.description}</p>
-                    {mask.selectionReason && (
-                      <div className="selection-reason">
-                        <strong>Why this mask:</strong>
-                        <p>{mask.selectionReason}</p>
-                      </div>
-                    )}
-                    {mask.features && mask.features.length > 0 && (
-                      <div className="mask-features">
-                        <strong>Key Features:</strong>
-                        <ul>
-                          {mask.features.slice(0, 3).map((feature, fIndex) => (
-                            <li key={fIndex}>{feature}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                  <MaskCard 
+                    key={index} 
+                    mask={mask} 
+                    isTopChoice={index === 0 && (!recommendation.maskExamples.resmed || recommendation.maskExamples.resmed.length === 0)}
+                  />
                 ))}
               </div>
             </div>

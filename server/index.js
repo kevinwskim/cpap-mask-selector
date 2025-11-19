@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const QRCode = require('qrcode');
 const { calculateMaskRecommendation } = require('./algorithm');
 
 const app = express();
@@ -38,6 +39,31 @@ app.post('/api/recommend', (req, res) => {
       error: 'Failed to calculate recommendation',
       message: error.message
     });
+  }
+});
+
+// Serve mask images
+app.use('/detail', express.static(path.join(__dirname, '../detail')));
+
+// QR Code generation endpoint
+app.get('/api/qrcode', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'URL parameter required' });
+    }
+    
+    const qrCodeDataURL = await QRCode.toDataURL(url, {
+      errorCorrectionLevel: 'M',
+      type: 'image/png',
+      width: 300,
+      margin: 1
+    });
+    
+    res.json({ qrCode: qrCodeDataURL });
+  } catch (error) {
+    console.error('QR Code generation error:', error);
+    res.status(500).json({ error: 'Failed to generate QR code' });
   }
 });
 

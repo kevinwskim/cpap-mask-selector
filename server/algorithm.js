@@ -750,10 +750,21 @@ function calculateMaskRecommendation(responses) {
   topMasks.forEach(mask => {
     const maskInfo = {
       name: mask.name,
-      description: mask.description,
+      model: mask.model,
+      description: mask.description || `${mask.design} ${mask.type.toLowerCase()}`,
       selectionReason: generateSelectionExplanation(mask, responses, factorDetails),
-      features: mask.features,
-      bestFor: mask.bestFor,
+      selectionExplanation: mask.selectionExplanation,
+      keyFeatures: mask.keyFeatures || [],
+      bestFor: mask.bestFor || [],
+      imagePath: mask.imagePath,
+      address: mask.address,
+      design: mask.design,
+      connection: mask.connection,
+      cushionMaterial: mask.cushionMaterial,
+      pressureRange: mask.pressureRange,
+      weight: mask.weight,
+      soundLevel: mask.soundLevel,
+      magneticClips: mask.magneticClips,
       score: mask.score
     };
     

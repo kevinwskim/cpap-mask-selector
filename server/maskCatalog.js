@@ -1,243 +1,96 @@
 // Comprehensive CPAP Mask Catalog
-// Based on detailed descriptions from the 12-factor algorithm
+// Updated from FINAL_CPAP_MASK_CATALOG_COMPLETE.csv
 
-const MASK_CATALOG = {
-  // NASAL MASKS
-  'ResMed AirFit N20': {
-    brand: 'ResMed',
-    type: 'NASAL_MASK',
-    name: 'ResMed AirFit N20',
-    description: 'Traditional nasal mask with memory foam cushion option, provides comfortable seal with minimal contact',
-    features: ['Memory foam cushion available', 'Traditional design', 'Comfortable seal', 'Minimal contact'],
-    bestFor: ['Nose-only breathing', 'No nasal obstruction', 'Back sleepers', 'Standard headgear'],
-    avoidIf: ['Facial hair (20-30% success rate)', 'Claustrophobic (prefer pillows)', 'Side/stomach sleepers (prefer tube-up)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirFit N30i': {
-    brand: 'ResMed',
-    type: 'NASAL_MASK',
-    name: 'ResMed AirFit N30i',
-    description: 'Tube-up nasal mask with soft cradle design, ideal for side and stomach sleepers',
-    features: ['Tube-up design', 'Soft cradle', 'Pillow-friendly', 'Side/stomach sleeper friendly'],
-    bestFor: ['Side sleepers', 'Stomach sleepers', 'Nose-only breathing', 'No nasal obstruction'],
-    avoidIf: ['Facial hair', 'Claustrophobic'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirTouch N30i': {
-    brand: 'ResMed',
-    type: 'NASAL_MASK',
-    name: 'ResMed AirTouch N30i',
-    description: 'Fabric-wrapped nasal mask - BEST for sensitive skin, tube-up design',
-    features: ['Fabric-wrapped cushion', 'Tube-up design', 'Hypoallergenic', 'Sensitive skin friendly'],
-    bestFor: ['Sensitive skin', 'Allergies', 'Side sleepers', 'Skin sensitivity issues'],
-    avoidIf: ['Facial hair'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips DreamWear Nasal': {
-    brand: 'Philips',
-    type: 'NASAL_MASK',
-    name: 'Philips DreamWear Nasal',
-    description: 'Under-the-nose nasal mask with tube-up design, minimal contact',
-    features: ['Under-the-nose', 'Tube-up design', 'Minimal contact', 'Pillow-friendly'],
-    bestFor: ['Side sleepers', 'Stomach sleepers', 'Claustrophobic patients', 'Minimal contact preference'],
-    avoidIf: ['Facial hair'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips Wisp Nasal': {
-    brand: 'Philips',
-    type: 'NASAL_MASK',
-    name: 'Philips Wisp Nasal',
-    description: 'Lightweight nasal mask with minimal contact, traditional design',
-    features: ['Lightweight', 'Minimal contact', 'Traditional design', 'Comfortable'],
-    bestFor: ['Back sleepers', 'Nose-only breathing', 'Lightweight preference'],
-    avoidIf: ['Facial hair', 'Side/stomach sleepers', 'Claustrophobic'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips DreamWear Gel Nasal': {
-    brand: 'Philips',
-    type: 'NASAL_MASK',
-    name: 'Philips DreamWear Gel Nasal',
-    description: 'Gel cushion nasal mask, gentle on sensitive skin',
-    features: ['Gel cushion', 'Sensitive skin friendly', 'Tube-up design'],
-    bestFor: ['Sensitive skin', 'Side sleepers', 'Gel preference'],
-    avoidIf: ['Facial hair'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
+const fs = require('fs');
+const path = require('path');
 
-  // NASAL PILLOWS
-  'ResMed AirFit P10': {
-    brand: 'ResMed',
-    type: 'NASAL_PILLOWS',
-    name: 'ResMed AirFit P10',
-    description: 'Ultra-minimal nasal pillows, lightweight and quiet - best for claustrophobic patients',
-    features: ['Ultra-minimal', 'Lightweight', 'Quiet', 'Minimal contact'],
-    bestFor: ['Claustrophobic', 'Minimal contact preference', 'Back sleepers', 'Facial hair'],
-    avoidIf: ['Side/stomach sleepers (prefer P30i)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: true
-  },
-  'ResMed AirFit P30i': {
-    brand: 'ResMed',
-    type: 'NASAL_PILLOWS',
-    name: 'ResMed AirFit P30i',
-    description: 'Tube-up nasal pillows, perfect for side/stomach sleepers, maintains seal with movement',
-    features: ['Tube-up design', 'Side/stomach sleeper friendly', 'Seal retention', 'Soft pillows'],
-    bestFor: ['Side sleepers', 'Stomach sleepers', 'High movement', 'Facial hair', 'Claustrophobic'],
-    avoidIf: [],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: true
-  },
-  'Philips DreamWear Silicone Pillows': {
-    brand: 'Philips',
-    type: 'NASAL_PILLOWS',
-    name: 'Philips DreamWear Silicone Pillows',
-    description: 'Soft silicone pillows with tube-up frame, excellent for sensitive skin and side sleepers',
-    features: ['Soft silicone', 'Tube-up design', 'Sensitive skin friendly', 'Side sleeper friendly'],
-    bestFor: ['Sensitive skin', 'Side sleepers', 'Claustrophobic', 'Facial hair', 'Soft material preference'],
-    avoidIf: [],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: true
-  },
-  'Philips Nuance Pro': {
-    brand: 'Philips',
-    type: 'NASAL_PILLOWS',
-    name: 'Philips Nuance Pro',
-    description: 'Gel nasal pillows with minimal contact, comfortable for sensitive users',
-    features: ['Gel pillows', 'Minimal contact', 'Sensitive skin friendly'],
-    bestFor: ['Sensitive skin', 'Gel preference', 'Minimal contact'],
-    avoidIf: ['Side/stomach sleepers (prefer tube-up)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: true
-  },
+// Parse CSV data
+const csvPath = path.join(__dirname, '../detail/FINAL_CPAP_MASK_CATALOG_COMPLETE.csv');
+const csvData = fs.readFileSync(csvPath, 'utf-8');
+const lines = csvData.split('\n').filter(line => line.trim());
+const headers = lines[0].split(',');
 
-  // FULL FACE MASKS
-  'ResMed AirFit F20': {
-    brand: 'ResMed',
-    type: 'FULL_FACE',
-    name: 'ResMed AirFit F20',
-    description: 'Full face mask with memory foam or silicone cushion options, standard design',
-    features: ['Memory foam option', 'Silicone option', 'Standard design', 'Comfortable seal'],
-    bestFor: ['Mouth breathing', 'Mixed breathing', 'Back sleepers', 'Standard use'],
-    avoidIf: ['Facial hair (needs liners)', 'Claustrophobic (prefer F30/F40)', 'Side sleepers (prefer F30i)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirFit F30': {
-    brand: 'ResMed',
-    type: 'FULL_FACE',
-    name: 'ResMed AirFit F30',
-    description: 'Under-the-nose full face mask, less invasive than traditional full face',
-    features: ['Under-the-nose', 'Less invasive', 'Open field of vision', 'Minimal contact'],
-    bestFor: ['Claustrophobic + mouth breathing', 'Minimal contact preference', 'Open vision needed'],
-    avoidIf: ['Side sleepers (prefer F30i)', 'Facial hair (needs liners)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirFit F30i': {
-    brand: 'ResMed',
-    type: 'FULL_FACE',
-    name: 'ResMed AirFit F30i',
-    description: 'Tube-up full face mask for side sleepers, under-the-nose design',
-    features: ['Tube-up design', 'Under-the-nose', 'Side sleeper friendly', 'Pillow-friendly'],
-    bestFor: ['Side sleepers', 'Stomach sleepers', 'Mouth breathing', 'Mixed breathing'],
-    avoidIf: ['Facial hair (needs liners)'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirFit F40': {
-    brand: 'ResMed',
-    type: 'FULL_FACE',
-    name: 'ResMed AirFit F40',
-    description: 'Smallest full face mask, minimal contact - best for claustrophobic patients who need full face',
-    features: ['Smallest size', 'Minimal contact', 'Claustrophobic friendly', 'Compact design'],
-    bestFor: ['Claustrophobic + mouth breathing', 'Minimal contact preference', 'Smaller face'],
-    avoidIf: ['Facial hair (needs liners)', 'Side sleepers (prefer F30i)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'ResMed AirTouch F20': {
-    brand: 'ResMed',
-    type: 'FULL_FACE',
-    name: 'ResMed AirTouch F20',
-    description: 'Memory foam cushion full face mask - BEST for sensitive skin',
-    features: ['Memory foam cushion', 'Sensitive skin friendly', 'Hypoallergenic', 'Comfortable'],
-    bestFor: ['Sensitive skin', 'Allergies', 'Skin sensitivity', 'Memory foam preference'],
-    avoidIf: ['Facial hair (needs liners)', 'Side sleepers (prefer F30i)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips DreamWear Full Face': {
-    brand: 'Philips',
-    type: 'FULL_FACE',
-    name: 'Philips DreamWear Full Face',
-    description: 'Under-the-nose full face with tube-up design, pillow-friendly',
-    features: ['Under-the-nose', 'Tube-up design', 'Pillow-friendly', 'Side sleeper friendly'],
-    bestFor: ['Side sleepers', 'Stomach sleepers', 'Mouth breathing', 'Mixed breathing'],
-    avoidIf: ['Facial hair (needs liners)'],
-    tubeUp: true,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips Amara View': {
-    brand: 'Philips',
-    type: 'FULL_FACE',
-    name: 'Philips Amara View',
-    description: 'Open field of vision full face mask, minimal contact - good for claustrophobic patients',
-    features: ['Open field of vision', 'Minimal contact', 'Claustrophobic friendly', 'Under-the-nose'],
-    bestFor: ['Claustrophobic + mouth breathing', 'Open vision needed', 'Minimal contact'],
-    avoidIf: ['Facial hair (needs liners)', 'Side sleepers (prefer DreamWear)'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips Amara Gel': {
-    brand: 'Philips',
-    type: 'FULL_FACE',
-    name: 'Philips Amara Gel',
-    description: 'Gel cushion full face mask, gentle on sensitive skin',
-    features: ['Gel cushion', 'Sensitive skin friendly', 'Comfortable seal'],
-    bestFor: ['Sensitive skin', 'Gel preference', 'Skin sensitivity'],
-    avoidIf: ['Facial hair (needs liners)', 'Side sleepers'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: false
-  },
-  'Philips FitLife Total Face': {
-    brand: 'Philips',
-    type: 'FULL_FACE',
-    name: 'Philips FitLife Total Face',
-    description: 'Total face mask - BEST for facial hair, covers entire face for superior seal',
-    features: ['Total face coverage', 'Facial hair compatible', 'Superior seal', 'No facial contact issues'],
-    bestFor: ['Facial hair', 'Beard/mustache', 'Seal issues with other masks', 'Full coverage needed'],
-    avoidIf: ['Claustrophobic', 'Minimal contact preference'],
-    tubeUp: false,
-    skinFriendly: true,
-    facialHairCompatible: true
-  }
-};
+// Build mask catalog from CSV
+const MASK_CATALOG = {};
+const imageBasePath = '/detail/image/';
 
-// Get masks by criteria
+for (let i = 1; i < lines.length; i++) {
+  const values = lines[i].split(',');
+  const mask = {};
+  
+  headers.forEach((header, index) => {
+    mask[header.trim()] = values[index]?.trim() || '';
+  });
+  
+  // Create catalog entry
+  const key = `${mask.Brand} ${mask.Model}`;
+  const imageName = getImageName(mask.Brand, mask.Model);
+  
+  MASK_CATALOG[key] = {
+    brand: mask.Brand,
+    type: mask.Type,
+    name: `${mask.Brand} ${mask.Model}`,
+    model: mask.Model,
+    design: mask.Design,
+    connection: mask.Connection,
+    cushionMaterial: mask['Cushion Material'],
+    pressureRange: mask['Pressure Range'],
+    weight: mask.Weight,
+    soundLevel: mask['Sound Level'],
+    magneticClips: mask['Magnetic Clips'] === 'Yes',
+    keyFeatures: mask['Key Features'] ? mask['Key Features'].split(',').map(f => f.trim()) : [],
+    bestFor: mask['Best For'] ? mask['Best For'].split(',').map(f => f.trim()) : [],
+    algorithmMatch: mask['Algorithm Match'] || '',
+    address: mask.Address || '',
+    imagePath: imageName ? `${imageBasePath}${imageName}` : null,
+    tubeUp: mask.Connection === 'Top',
+    skinFriendly: mask['Cushion Material']?.toLowerCase().includes('fabric') || 
+                  mask['Cushion Material']?.toLowerCase().includes('memory foam') ||
+                  mask['Cushion Material']?.toLowerCase().includes('gel') ||
+                  mask['Cushion Material']?.toLowerCase().includes('comfisoft'),
+    facialHairCompatible: mask.Type === 'Nasal Pillows' || 
+                          mask.Type === 'Total Face' ||
+                          mask.Model?.includes('FitLife')
+  };
+}
+
+// Helper function to map model names to image files
+function getImageName(brand, model) {
+  const imageMap = {
+    'ResMed AirFit P10': 'AirFit P10.jpg',
+    'ResMed AirFit P30i': 'AirFit P30i.jpg',
+    'ResMed AirFit N20': 'AirFit N20.jpg',
+    'ResMed AirFit N20 Classic': 'AirFit N20 Classic.PNG',
+    'ResMed AirFit N30': 'AirFit N30.jpg',
+    'ResMed AirFit N30i': 'AirFit N30i.jpeg',
+    'ResMed AirTouch N30i': 'AirTouch N30i.jpg',
+    'ResMed AirFit X30i': 'AirFit X30i.jpg',
+    'ResMed AirFit F20': 'AirFit F20.jpg',
+    'ResMed AirTouch F20': 'AirTouch F20.jpg',
+    'ResMed AirFit F30': 'AirFit F30.jpg',
+    'ResMed AirFit F30i': 'AirFit F30i.jpg',
+    'ResMed AirFit F40': 'AirFit F40.jpg',
+    'ResMed Mirage Quattro': 'Mirage Quattro.jpg',
+    'Philips DreamWear Silicone Pillows': 'DreamWear Silicone Pillows.PNG',
+    'Philips Pico': 'Pico.PNG',
+    'Philips DreamWear Nasal': 'DreamWear.PNG',
+    'Philips DreamWear Gel Nasal': 'DreamWear.PNG',
+    'Philips DreamWisp Nasal': 'DreamWispNasal.PNG',
+    'Philips Wisp Nasal': 'Wisp.PNG',
+    'Philips Nuance': 'Nuance.PNG',
+    'Philips ComfortGel Blue': 'ComfortGel Blue.PNG',
+    'Philips DreamWear Full Face': 'DreamWear Full Face.PNG',
+    'Philips Amara': 'Amara.PNG',
+    'Philips Amara Gel': 'Amara Gel.PNG',
+    'Philips Amara View': 'Amara View.PNG',
+    'Philips TrueBlue': 'TrueBlue.PNG',
+    'Philips FitLife Total Face': 'FitLife Total Face.PNG'
+  };
+  
+  return imageMap[`${brand} ${model}`] || null;
+}
+
+// Get masks by criteria with optimized matching
 function getMasksByCriteria(criteria) {
   const {
     maskType,
@@ -247,7 +100,12 @@ function getMasksByCriteria(criteria) {
     sleepPosition = null,
     claustrophobic = false,
     skinSensitivity = false,
-    facialHair = false
+    facialHair = false,
+    breathing = null,
+    nasal = null,
+    sleepMovement = null,
+    assistant = false,
+    adjustment = false
   } = criteria;
 
   let masks = Object.values(MASK_CATALOG);
@@ -260,8 +118,6 @@ function getMasksByCriteria(criteria) {
   // Filter by tube-up requirement
   if (tubeUp === true) {
     masks = masks.filter(m => m.tubeUp === true);
-  } else if (tubeUp === false) {
-    masks = masks.filter(m => m.tubeUp === false);
   }
 
   // Filter by skin friendliness
@@ -274,10 +130,28 @@ function getMasksByCriteria(criteria) {
     masks = masks.filter(m => m.facialHairCompatible === true);
   }
 
-  // Score masks based on criteria
+  // Score masks based on algorithm match and criteria
   const scoredMasks = masks.map(mask => {
     let score = 0;
     let reasons = [];
+    let selectionExplanation = '';
+
+    // Check algorithm match string for direct matches
+    const algoMatch = mask.algorithmMatch.toLowerCase();
+    
+    // Breathing type matching
+    if (breathing === 'nose_only' && algoMatch.includes('nose-only')) {
+      score += 40;
+      reasons.push('Perfect match for nose-only breathing');
+    }
+    if (breathing === 'mouth_only' && algoMatch.includes('mouth-only')) {
+      score += 40;
+      reasons.push('Perfect match for mouth-only breathing');
+    }
+    if (breathing === 'mixed' && algoMatch.includes('mixed')) {
+      score += 40;
+      reasons.push('Perfect match for mixed breathing');
+    }
 
     // Sleep position scoring
     if (sleepPosition === 'side' || sleepPosition === 'stomach') {
@@ -285,28 +159,24 @@ function getMasksByCriteria(criteria) {
         score += 30;
         reasons.push('Tube-up design ideal for side/stomach sleepers');
       }
-      if (mask.bestFor.some(f => f.includes('Side') || f.includes('Stomach'))) {
-        score += 20;
-        reasons.push('Specifically designed for side/stomach sleepers');
-      }
-    } else if (sleepPosition === 'back') {
-      if (!mask.tubeUp || mask.tubeUp === false) {
-        score += 10;
+      if (algoMatch.includes('side')) {
+        score += 25;
+        reasons.push('Specifically designed for side sleepers');
       }
     }
 
     // Claustrophobic scoring
     if (claustrophobic) {
-      if (mask.type === 'NASAL_PILLOWS') {
+      if (mask.type === 'Nasal Pillows') {
         score += 25;
-        reasons.push('Nasal pillows provide minimal contact for claustrophobic patients');
+        reasons.push('Nasal pillows provide minimal contact');
       }
-      if (mask.bestFor.some(f => f.includes('Claustrophobic'))) {
-        score += 20;
+      if (algoMatch.includes('claustrophobic')) {
+        score += 30;
         reasons.push('Specifically designed for claustrophobic patients');
       }
-      if (mask.features.some(f => f.includes('Minimal contact'))) {
-        score += 15;
+      if (mask.design?.toLowerCase().includes('minimal')) {
+        score += 20;
         reasons.push('Minimal contact design reduces claustrophobia');
       }
     }
@@ -314,35 +184,63 @@ function getMasksByCriteria(criteria) {
     // Skin sensitivity scoring
     if (skinSensitivity) {
       if (mask.skinFriendly) {
-        score += 20;
+        score += 25;
         reasons.push('Skin-friendly materials reduce irritation');
       }
-      if (mask.bestFor.some(f => f.includes('Sensitive skin'))) {
-        score += 25;
+      if (algoMatch.includes('skin sensitivity') || algoMatch.includes('sensitive skin')) {
+        score += 30;
         reasons.push('Specifically designed for sensitive skin');
-      }
-      if (mask.features.some(f => f.includes('Memory foam') || f.includes('Gel') || f.includes('Fabric'))) {
-        score += 15;
-        reasons.push('Soft materials (memory foam/gel/fabric) gentle on sensitive skin');
       }
     }
 
     // Facial hair scoring
     if (facialHair) {
       if (mask.facialHairCompatible) {
-        score += 30;
+        score += 35;
         reasons.push('Compatible with facial hair for proper seal');
       }
-      if (mask.name.includes('FitLife Total Face')) {
+      if (mask.type === 'Total Face') {
         score += 40;
         reasons.push('Total face mask provides best seal with facial hair');
       }
     }
 
+    // Movement scoring
+    if (sleepMovement === 'all_the_time') {
+      if (mask.tubeUp) {
+        score += 20;
+        reasons.push('Tube-up design maintains seal during movement');
+      }
+      if (algoMatch.includes('active') || algoMatch.includes('movement')) {
+        score += 25;
+        reasons.push('Designed for active sleepers');
+      }
+    }
+
+    // Assistant scoring
+    if (assistant && mask.magneticClips) {
+      score += 30;
+      reasons.push('Magnetic clips enable easy removal for assistants');
+    }
+
+    // Adjustment issues scoring
+    if (adjustment && mask.magneticClips) {
+      score += 25;
+      reasons.push('Magnetic clips reduce need for manual adjustments');
+    }
+
+    // Build selection explanation
+    if (reasons.length > 0) {
+      selectionExplanation = reasons.join('. ') + '.';
+    } else {
+      selectionExplanation = `Selected because it matches your ${mask.type.toLowerCase()} needs based on your responses.`;
+    }
+
     return {
       ...mask,
       score,
-      selectionReasons: reasons
+      selectionReasons: reasons,
+      selectionExplanation
     };
   });
 
@@ -354,33 +252,15 @@ function getMasksByCriteria(criteria) {
 
 // Generate selection explanation for a mask
 function generateSelectionExplanation(mask, responses, allFactors) {
+  if (mask.selectionExplanation) {
+    return mask.selectionExplanation;
+  }
+  
   const explanations = [];
+  explanations.push(`Selected because it matches your ${mask.type.toLowerCase()} needs`);
 
-  // Base explanation
-  explanations.push(`Selected because it matches your ${mask.type.replace('_', ' ').toLowerCase()} needs`);
-
-  // Add specific reasons
   if (mask.selectionReasons && mask.selectionReasons.length > 0) {
     explanations.push(...mask.selectionReasons);
-  }
-
-  // Add feature-based explanations
-  if (responses.sleepPosition === 'side' || responses.sleepPosition === 'stomach') {
-    if (mask.tubeUp) {
-      explanations.push('Tube-up design prevents mask displacement when sleeping on your side or stomach');
-    }
-  }
-
-  if (responses.claustrophobic && mask.type === 'NASAL_PILLOWS') {
-    explanations.push('Nasal pillows provide the least invasive option for claustrophobic patients');
-  }
-
-  if (responses.facialHair && mask.facialHairCompatible) {
-    explanations.push('This mask design works well with facial hair, avoiding seal issues common with traditional cushions');
-  }
-
-  if (responses.skinSensitivity && mask.skinFriendly) {
-    explanations.push('Skin-friendly materials reduce the risk of irritation and allergic reactions');
   }
 
   return explanations.join('. ') + '.';
@@ -391,4 +271,3 @@ module.exports = {
   getMasksByCriteria,
   generateSelectionExplanation
 };
-
