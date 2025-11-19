@@ -142,10 +142,34 @@ function Questionnaire({ onSubmit }) {
   const [errors, setErrors] = useState({});
 
   const handleAnswer = (questionId, value) => {
-    setResponses(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
+    setResponses(prev => {
+      const newResponses = {
+        ...prev,
+        [questionId]: value
+      };
+      
+      // Auto-advance to next question after a short delay
+      setTimeout(() => {
+        setCurrentStep(prevStep => {
+          if (prevStep < QUESTIONS.length - 1) {
+            return prevStep + 1;
+          } else {
+            // Last question - submit after delay
+            setTimeout(() => {
+              // Final validation before submit
+              const missing = QUESTIONS.filter(q => q.required && !newResponses[q.id]);
+              if (missing.length === 0) {
+                onSubmit(newResponses);
+              }
+            }, 300);
+            return prevStep;
+          }
+        });
+      }, 500); // 500ms delay for better UX
+      
+      return newResponses;
+    });
+    
     // Clear error for this question
     if (errors[questionId]) {
       setErrors(prev => {
@@ -227,8 +251,9 @@ function Questionnaire({ onSubmit }) {
         <button
           onClick={handleNext}
           className="btn-primary"
+          style={{ opacity: responses[currentQuestion.id] !== undefined ? 0.7 : 1 }}
         >
-          {currentStep === QUESTIONS.length - 1 ? 'Get Recommendation' : 'Next'}
+          {currentStep === QUESTIONS.length - 1 ? 'Get Recommendation' : 'Next (or select an answer)'}
         </button>
       </div>
     </div>
