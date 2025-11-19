@@ -738,8 +738,17 @@ function calculateMaskRecommendation(responses) {
     facialHair: responses.facialHair
   });
   
-  // Get top 3-4 masks (top scoring)
-  const topMasks = recommendedMasks.slice(0, 4);
+  // Get top 3-4 masks (top scoring) - ensure we have masks
+  const topMasks = recommendedMasks.length > 0 ? recommendedMasks.slice(0, 4) : [];
+  
+  // If no masks found, try to get any masks of the correct type
+  if (topMasks.length === 0) {
+    const { getMasksByCriteria } = require('./maskCatalog');
+    const fallbackMasks = getMasksByCriteria({
+      maskType: refinedRecommendation.category
+    });
+    topMasks.push(...fallbackMasks.slice(0, 4));
+  }
   
   // Organize by brand
   const maskExamples = {

@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import MaskCard from './MaskCard';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './Results.css';
 
 function Results({ recommendation, responses, onReset }) {
+  const resultsRef = useRef(null);
+
   const getMaskTypeLabel = (type) => {
     const labels = {
       'NASAL_MASK': 'Nasal Mask',
@@ -12,13 +16,75 @@ function Results({ recommendation, responses, onReset }) {
     return labels[type] || type;
   };
 
+  // Helper to find mask by name in specificModels
+  const findMaskByName = (modelName) => {
+    if (!recommendation.maskExamples) return null;
+    
+    // Try to find in maskExamples
+    const allMasks = [
+      ...(recommendation.maskExamples.resmed || []),
+      ...(recommendation.maskExamples.philips || [])
+    ];
+    
+    // Extract base name (remove accessories like "+ Fabric Liners")
+    const baseName = modelName.split('+')[0].trim();
+    
+    return allMasks.find(mask => 
+      mask.name.includes(baseName) || 
+      mask.model === baseName ||
+      baseName.includes(mask.model)
+    );
+  };
+
+  const exportToPDF = async () => {
+    if (!resultsRef.current) return;
+
+    try {
+      const canvas = await html2canvas(resultsRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const fileName = `CPAP_Mask_Recommendation_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    }
+  };
+
   return (
-    <div className="results-container">
+    <div className="results-container" ref={resultsRef}>
       <div className="results-header">
         <h2>Your CPAP Mask Recommendation</h2>
-        <button onClick={onReset} className="btn-secondary">
-          Start Over
-        </button>
+        <div className="header-buttons">
+          <button onClick={exportToPDF} className="btn-export">
+            📄 Export PDF
+          </button>
+          <button onClick={onReset} className="btn-secondary">
+            Start Over
+          </button>
+        </div>
       </div>
 
       {/* Safety Warnings */}
@@ -81,18 +147,37 @@ function Results({ recommendation, responses, onReset }) {
         </div>
       )}
 
-      {/* Specific Models */}
-      {recommendation.specificModels && recommendation.specificModels.length > 0 && (
+      {/* Specific Models - Convert to MaskCards if possible */}
+      {recommendation.specificModels && recommendation.specificModels.length > 0 && 
+       (!recommendation.maskExamples || 
+        (recommendation.maskExamples.resmed.length === 0 && recommendation.maskExamples.philips.length === 0)) && (
         <div className="recommendation-section">
           <h3>Recommended Models</h3>
-          <ul className="models-list">
-            {recommendation.specificModels.map((model, index) => (
-              <li key={index} className="model-item">
-                {index === 0 && <span className="top-choice">Top Choice</span>}
-                {model}
-              </li>
-            ))}
-          </ul>
+          <div className="mask-examples-list">
+            {recommendation.specificModels.map((modelName, index) => {
+              const mask = findMaskByName(modelName);
+              if (mask) {
+                return (
+                  <MaskCard 
+                    key={index} 
+                    mask={mask} 
+                    isTopChoice={index === 0}
+                  />
+                );
+              }
+              // Fallback to text if mask not found
+              return (
+                <div key={index} className="mask-card">
+                  <div className="mask-card-header">
+                    <h5>
+                      {index === 0 && <span className="top-choice">Top Choice</span>}
+                      {modelName}
+                    </h5>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
