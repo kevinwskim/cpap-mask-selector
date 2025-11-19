@@ -71,10 +71,187 @@ addText('This document describes the comprehensive CPAP mask selection algorithm
 doc.moveDown(0.5);
 addText('The algorithm uses a 6-step decision process that ensures safety constraints are met first, then determines the primary mask type, applies modifiers, and selects appropriate attachments and accessories.', 11);
 
+// New Page - Visual Overview
+doc.addPage();
+
+addSection('Algorithm Flow Overview', 18, true);
+doc.moveDown(0.3);
+
+// Draw main flow diagram
+const startX = 50;
+const startY = 100;
+const boxWidth = 150;
+const boxHeight = 40;
+const spacing = 60;
+
+// Step 1 Box
+doc.rect(startX, startY, boxWidth, boxHeight)
+   .fillAndStroke('#FF6B6B', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('white')
+   .text('STEP 1', startX + 10, startY + 5, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Safety Check', startX + 10, startY + 18, { width: boxWidth - 20, align: 'center' });
+doc.fillColor('black');
+
+// Arrow down
+doc.moveTo(startX + boxWidth/2, startY + boxHeight)
+   .lineTo(startX + boxWidth/2, startY + boxHeight + 20)
+   .stroke();
+
+// Step 2 Box
+doc.rect(startX, startY + boxHeight + 20, boxWidth, boxHeight)
+   .fillAndStroke('#4ECDC4', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('white')
+   .text('STEP 2', startX + 10, startY + boxHeight + 25, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Primary Mask Type', startX + 10, startY + boxHeight + 38, { width: boxWidth - 20, align: 'center' });
+doc.fillColor('black');
+
+// Arrow down
+doc.moveTo(startX + boxWidth/2, startY + boxHeight*2 + 20)
+   .lineTo(startX + boxWidth/2, startY + boxHeight*2 + 40)
+   .stroke();
+
+// Step 3 Box
+doc.rect(startX, startY + boxHeight*2 + 40, boxWidth, boxHeight)
+   .fillAndStroke('#FFE66D', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('black')
+   .text('STEP 3', startX + 10, startY + boxHeight*2 + 45, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Strong Modifiers', startX + 10, startY + boxHeight*2 + 58, { width: boxWidth - 20, align: 'center' });
+
+// Arrow down
+doc.moveTo(startX + boxWidth/2, startY + boxHeight*3 + 40)
+   .lineTo(startX + boxWidth/2, startY + boxHeight*3 + 60)
+   .stroke();
+
+// Step 4 Box
+doc.rect(startX, startY + boxHeight*3 + 60, boxWidth, boxHeight)
+   .fillAndStroke('#95E1D3', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('black')
+   .text('STEP 4', startX + 10, startY + boxHeight*3 + 65, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Moderate Modifiers', startX + 10, startY + boxHeight*3 + 78, { width: boxWidth - 20, align: 'center' });
+
+// Arrow down
+doc.moveTo(startX + boxWidth/2, startY + boxHeight*4 + 60)
+   .lineTo(startX + boxWidth/2, startY + boxHeight*4 + 80)
+   .stroke();
+
+// Step 5 Box
+doc.rect(startX, startY + boxHeight*4 + 80, boxWidth, boxHeight)
+   .fillAndStroke('#A8E6CF', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('black')
+   .text('STEP 5', startX + 10, startY + boxHeight*4 + 85, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Attachment Method', startX + 10, startY + boxHeight*4 + 98, { width: boxWidth - 20, align: 'center' });
+
+// Arrow down
+doc.moveTo(startX + boxWidth/2, startY + boxHeight*5 + 80)
+   .lineTo(startX + boxWidth/2, startY + boxHeight*5 + 100)
+   .stroke();
+
+// Step 6 Box
+doc.rect(startX, startY + boxHeight*5 + 100, boxWidth, boxHeight)
+   .fillAndStroke('#FFD3A5', '#000000');
+doc.fontSize(10).font('Helvetica-Bold').fillColor('black')
+   .text('STEP 6', startX + 10, startY + boxHeight*5 + 105, { width: boxWidth - 20, align: 'center' });
+doc.fontSize(8).text('Accessory Selection', startX + 10, startY + boxHeight*5 + 118, { width: boxWidth - 20, align: 'center' });
+
+// Arrow down to final result
+doc.moveTo(startX + boxWidth/2, startY + boxHeight*6 + 100)
+   .lineTo(startX + boxWidth/2, startY + boxHeight*6 + 120)
+   .stroke();
+
+// Final Result Box
+doc.rect(startX - 25, startY + boxHeight*6 + 120, boxWidth + 50, boxHeight + 10)
+   .fillAndStroke('#667EEA', '#000000');
+doc.fontSize(11).font('Helvetica-Bold').fillColor('white')
+   .text('FINAL RECOMMENDATION', startX - 15, startY + boxHeight*6 + 125, { width: boxWidth + 30, align: 'center' });
+doc.fontSize(9).text('Mask + Attachment + Accessories', startX - 15, startY + boxHeight*6 + 142, { width: boxWidth + 30, align: 'center' });
+doc.fillColor('black');
+
+// Add side annotations for factors
+const rightX = startX + boxWidth + 30;
+doc.fontSize(8).font('Helvetica').fillColor('black');
+
+// Step 1 factors
+doc.text('Factors:', rightX, startY + 5);
+doc.text('• Eye/Reflux/Drug', rightX, startY + 15);
+doc.text('• Assistant', rightX, startY + 25);
+doc.text('• Implant', rightX, startY + 35);
+
+// Step 2 factors
+doc.text('Factors:', rightX, startY + boxHeight + 25);
+doc.text('• Breathing Type', rightX, startY + boxHeight + 35);
+doc.text('• Nasal Status', rightX, startY + boxHeight + 45);
+
+// Step 3 factors
+doc.text('Factors:', rightX, startY + boxHeight*2 + 45);
+doc.text('• Claustrophobic', rightX, startY + boxHeight*2 + 55);
+doc.text('• Facial Hair', rightX, startY + boxHeight*2 + 65);
+doc.text('• Sleep Position', rightX, startY + boxHeight*2 + 75);
+
+// Step 4 factors
+doc.text('Factors:', rightX, startY + boxHeight*3 + 65);
+doc.text('• Sleep Movement', rightX, startY + boxHeight*3 + 75);
+doc.text('• Skin Sensitivity', rightX, startY + boxHeight*3 + 85);
+doc.text('• Adjustment Issues', rightX, startY + boxHeight*3 + 95);
+
+// Step 5 factors
+doc.text('All relevant', rightX, startY + boxHeight*4 + 85);
+doc.text('factors scored', rightX, startY + boxHeight*4 + 95);
+
+// Step 6 factors
+doc.text('All relevant', rightX, startY + boxHeight*5 + 105);
+doc.text('factors scored', rightX, startY + boxHeight*5 + 115);
+
+doc.moveDown(8);
+
+// New Page - Factor Hierarchy Visual
+doc.addPage();
+
+addSection('Factor Hierarchy & Weights', 18, true);
+doc.moveDown(0.3);
+
+// Draw factor hierarchy pyramid
+const pyramidX = 50;
+const pyramidY = 100;
+const tierWidth = 450;
+const tierHeight = 50;
+const tierSpacing = 5;
+
+// Tier 1 - Top (Critical)
+doc.rect(pyramidX, pyramidY, tierWidth, tierHeight)
+   .fillAndStroke('#FF6B6B', '#000000');
+doc.fontSize(12).font('Helvetica-Bold').fillColor('white')
+   .text('TIER 1: Critical Safety (Weight: 100)', pyramidX + 10, pyramidY + 10);
+doc.fontSize(9).text('Assistant • Eye/Reflux • Drug • Implant', pyramidX + 10, pyramidY + 28);
+doc.fillColor('black');
+
+// Tier 2
+doc.rect(pyramidX + 20, pyramidY + tierHeight + tierSpacing, tierWidth - 40, tierHeight)
+   .fillAndStroke('#4ECDC4', '#000000');
+doc.fontSize(12).font('Helvetica-Bold').fillColor('white')
+   .text('TIER 2: Primary Determinants (Weight: 95-85)', pyramidX + 30, pyramidY + tierHeight + tierSpacing + 10);
+doc.fontSize(9).text('Breathing Type • Nasal Obstruction', pyramidX + 30, pyramidY + tierHeight + tierSpacing + 28);
+doc.fillColor('black');
+
+// Tier 3
+doc.rect(pyramidX + 40, pyramidY + (tierHeight + tierSpacing)*2, tierWidth - 80, tierHeight)
+   .fillAndStroke('#FFE66D', '#000000');
+doc.fontSize(12).font('Helvetica-Bold').fillColor('black')
+   .text('TIER 3: Strong Modifiers (Weight: 80-70)', pyramidX + 50, pyramidY + (tierHeight + tierSpacing)*2 + 10);
+doc.fontSize(9).text('Claustrophobic • Facial Hair • Sleep Position', pyramidX + 50, pyramidY + (tierHeight + tierSpacing)*2 + 28);
+
+// Tier 4
+doc.rect(pyramidX + 60, pyramidY + (tierHeight + tierSpacing)*3, tierWidth - 120, tierHeight)
+   .fillAndStroke('#95E1D3', '#000000');
+doc.fontSize(12).font('Helvetica-Bold').fillColor('black')
+   .text('TIER 4: Moderate Modifiers (Weight: 60-50)', pyramidX + 70, pyramidY + (tierHeight + tierSpacing)*3 + 10);
+doc.fontSize(9).text('Sleep Movement • Skin Sensitivity • Adjustment Issues', pyramidX + 70, pyramidY + (tierHeight + tierSpacing)*3 + 28);
+
+doc.moveDown(6);
+
 // New Page
 doc.addPage();
 
-// Factor Hierarchy
+// Factor Hierarchy Text
 addSection('Factor Hierarchy & Weights', 18, true);
 doc.moveDown(0.3);
 
@@ -159,10 +336,97 @@ addText('Adjustment Issues (Weight: 50)', 12, true);
 addText('Impact: Attachment simplification', 11);
 addText('Decision Rule: Auto-adjusting or simplified designs preferred', 11);
 
+// New Page - Decision Tree Visual
+doc.addPage();
+
+addSection('Decision Tree: Primary Mask Type', 18, true);
+doc.moveDown(0.3);
+
+// Draw decision tree
+const treeX = 50;
+const treeY = 100;
+const nodeWidth = 120;
+const nodeHeight = 35;
+const hSpacing = 180;
+const vSpacing = 80;
+
+// Root node
+doc.rect(treeX + 200, treeY, nodeWidth, nodeHeight)
+   .fillAndStroke('#667EEA', '#000000');
+doc.fontSize(9).font('Helvetica-Bold').fillColor('white')
+   .text('Breathing Type', treeX + 210, treeY + 5, { width: nodeWidth - 20, align: 'center' });
+doc.text('+ Nasal Status', treeX + 210, treeY + 18, { width: nodeWidth - 20, align: 'center' });
+doc.fillColor('black');
+
+// Branch 1: Nose Only
+doc.moveTo(treeX + 200 + nodeWidth/2, treeY + nodeHeight)
+   .lineTo(treeX + 100, treeY + nodeHeight + vSpacing)
+   .stroke();
+doc.rect(treeX + 50, treeY + nodeHeight + vSpacing, nodeWidth, nodeHeight)
+   .fillAndStroke('#4ECDC4', '#000000');
+doc.fontSize(9).font('Helvetica-Bold').fillColor('white')
+   .text('Nose Only', treeX + 60, treeY + nodeHeight + vSpacing + 5, { width: nodeWidth - 20, align: 'center' });
+doc.text('No Obstruction', treeX + 60, treeY + nodeHeight + vSpacing + 18, { width: nodeWidth - 20, align: 'center' });
+doc.fillColor('black');
+
+// Result 1
+doc.moveTo(treeX + 50 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing)
+   .lineTo(treeX + 50 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing + 30)
+   .stroke();
+doc.rect(treeX + 20, treeY + nodeHeight*2 + vSpacing + 30, nodeWidth + 60, nodeHeight - 10)
+   .fillAndStroke('#A8E6CF', '#000000');
+doc.fontSize(8).font('Helvetica-Bold').fillColor('black')
+   .text('→ Nasal Mask/Pillows', treeX + 30, treeY + nodeHeight*2 + vSpacing + 35, { width: nodeWidth + 40, align: 'center' });
+doc.fontSize(7).text('85-90% Success', treeX + 30, treeY + nodeHeight*2 + vSpacing + 48, { width: nodeWidth + 40, align: 'center' });
+
+// Branch 2: Mouth Only
+doc.moveTo(treeX + 200 + nodeWidth/2, treeY + nodeHeight)
+   .lineTo(treeX + 260, treeY + nodeHeight + vSpacing)
+   .stroke();
+doc.rect(treeX + 200, treeY + nodeHeight + vSpacing, nodeWidth, nodeHeight)
+   .fillAndStroke('#FF6B6B', '#000000');
+doc.fontSize(9).font('Helvetica-Bold').fillColor('white')
+   .text('Mouth Only', treeX + 210, treeY + nodeHeight + vSpacing + 5, { width: nodeWidth - 20, align: 'center' });
+doc.text('(if safe)', treeX + 210, treeY + nodeHeight + vSpacing + 18, { width: nodeWidth - 20, align: 'center' });
+doc.fillColor('black');
+
+// Result 2
+doc.moveTo(treeX + 200 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing)
+   .lineTo(treeX + 200 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing + 30)
+   .stroke();
+doc.rect(treeX + 170, treeY + nodeHeight*2 + vSpacing + 30, nodeWidth + 60, nodeHeight - 10)
+   .fillAndStroke('#FFD3A5', '#000000');
+doc.fontSize(8).font('Helvetica-Bold').fillColor('black')
+   .text('→ Full Face Mask', treeX + 180, treeY + nodeHeight*2 + vSpacing + 35, { width: nodeWidth + 40, align: 'center' });
+doc.fontSize(7).text('80-85% Success', treeX + 180, treeY + nodeHeight*2 + vSpacing + 48, { width: nodeWidth + 40, align: 'center' });
+
+// Branch 3: Mixed
+doc.moveTo(treeX + 200 + nodeWidth/2, treeY + nodeHeight)
+   .lineTo(treeX + 420, treeY + nodeHeight + vSpacing)
+   .stroke();
+doc.rect(treeX + 350, treeY + nodeHeight + vSpacing, nodeWidth, nodeHeight)
+   .fillAndStroke('#FFE66D', '#000000');
+doc.fontSize(9).font('Helvetica-Bold').fillColor('black')
+   .text('Mixed', treeX + 360, treeY + nodeHeight + vSpacing + 5, { width: nodeWidth - 20, align: 'center' });
+doc.text('(both)', treeX + 360, treeY + nodeHeight + vSpacing + 18, { width: nodeWidth - 20, align: 'center' });
+
+// Result 3
+doc.moveTo(treeX + 350 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing)
+   .lineTo(treeX + 350 + nodeWidth/2, treeY + nodeHeight*2 + vSpacing + 30)
+   .stroke();
+doc.rect(treeX + 320, treeY + nodeHeight*2 + vSpacing + 30, nodeWidth + 60, nodeHeight - 10)
+   .fillAndStroke('#95E1D3', '#000000');
+doc.fontSize(8).font('Helvetica-Bold').fillColor('black')
+   .text('→ Full Face OR', treeX + 330, treeY + nodeHeight*2 + vSpacing + 35, { width: nodeWidth + 40, align: 'center' });
+doc.fontSize(7).text('Nasal + Chin Strap', treeX + 330, treeY + nodeHeight*2 + vSpacing + 48, { width: nodeWidth + 40, align: 'center' });
+doc.fontSize(6).text('75-85% Success', treeX + 330, treeY + nodeHeight*2 + vSpacing + 58, { width: nodeWidth + 40, align: 'center' });
+
+doc.moveDown(6);
+
 // New Page
 doc.addPage();
 
-// Complete Decision Algorithm
+// Complete Decision Algorithm Text
 addSection('Complete Decision Algorithm', 18, true);
 doc.moveDown(0.3);
 
