@@ -1,13 +1,16 @@
 # Dependencies
 node_modules/
+frontend/node_modules/
 /.pnp
 .pnp.js
 
 # Testing
 /coverage
+frontend/coverage
 
 # Production
 /build
+frontend/build
 /dist
 
 # Misc
@@ -29,4 +32,3 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
-
